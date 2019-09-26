@@ -3,21 +3,27 @@ const morgan = require('morgan')
 const layout = require('./views/layout')
 const { Page, User } = require('./models')
 
+const wikiRouter = require('./routes/wiki')
+const userRouter = require('./routes/user')
+
 const app = express()
 
 app.use(express.urlencoded({extended: false}))
 app.use(morgan('dev'))
 app.use(express.static(__dirname + '/public'))
 
+app.use('/wiki', wikiRouter);
+app.use('/user', userRouter);
+
 app.get('/', (req, res, next) => {
-  res.send(layout('/n'))
+  res.redirect('/wiki')
 })
 
 const PORT = 1337
 
 const init = async () => {
-  await Page.sync({force: true})
-  await User.sync({force: true})
+  await Page.sync()
+  await User.sync()
 
   app.listen(PORT, () => {
     console.log(`App listening to port ${PORT}`)
@@ -25,9 +31,3 @@ const init = async () => {
 }
 
 init()
-
-// ensure database connection is working:
-// db.authenticate().
-// then(() => {
-//   console.log('connected to the database');
-// })
