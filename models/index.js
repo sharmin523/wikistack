@@ -41,6 +41,8 @@ const User = db.define('user', {
   }
 })
 
+Page.belongsTo(User, {as: 'author'})
+
 // ensure database connection is working:
 // db.authenticate().
 // then(() => {
